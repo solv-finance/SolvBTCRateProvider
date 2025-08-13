@@ -21,8 +21,10 @@ contract SolvBTCRateProvider is Initializable, Ownable2StepUpgradeable {
     event ReserveFeedSet(address indexed reserveFeed);
     event UpdaterSet(address indexed updater);
     event MaxDifferencePercentSet(uint256 maxDifferencePercent);
+    event AlertInvalidReserve(int256 indexed reserve, uint256 indexed timestamp);
     event AlertInvalidReserveDifference(uint256 indexed reserve, uint256 indexed tvl, uint256 indexed timestamp);
     event AlertInvalidRate(uint256 indexed rate, uint256 indexed timestamp);
+    event LatestRateUpdated(uint256 indexed rate, uint256 indexed timestamp);
 
     // keccak256(abi.encode(uint256(keccak256("solv.storage.SolvBTCRateProvider")) - 1)) & ~bytes32(uint256(0xff))
     bytes32 private constant _RATE_PROVIDER_STORAGE_SLOT =
@@ -68,10 +70,13 @@ contract SolvBTCRateProvider is Initializable, Ownable2StepUpgradeable {
             ,
             /*uint80 answeredInRound*/
         ) = reserveFeed.latestRoundData();
+        if (reserve < 0) {
+            emit AlertInvalidReserve(reserve, block.timestamp);
+            return $.latestRate;
+        }
         uint256 latestReserve = uint256(reserve);
         uint256 difference = 0;
         if (latestReserve > totalTVL_) {
-            difference = (latestReserve - totalTVL_) * 100 / latestReserve;
             difference = Math.mulDiv(latestReserve - totalTVL_, RATE_PRECISION_FACTOR, latestReserve);
         } else {
             difference = Math.mulDiv(totalTVL_ - latestReserve, RATE_PRECISION_FACTOR, totalTVL_);
@@ -90,22 +95,20 @@ contract SolvBTCRateProvider is Initializable, Ownable2StepUpgradeable {
         $.latestTotalSupply = totalSupply_;
         $.latestUpdateTime = block.timestamp;
         $.latestRate = latestRate;
+        emit LatestRateUpdated(latestRate, block.timestamp);
         return latestRate;
     }
 
     function setReserveFeed(address reserveFeed) external onlyOwner {
         _setReserveFeed(reserveFeed);
-        emit ReserveFeedSet(reserveFeed);
     }
 
     function setUpdater(address updater) external onlyOwner {
         _setUpdater(updater);
-        emit UpdaterSet(updater);
     }
 
     function setMaxDifferencePercent(uint256 maxDifferencePercent) external onlyOwner {
         _setMaxDifferencePercent(maxDifferencePercent);
-        emit MaxDifferencePercentSet(maxDifferencePercent);
     }
 
     function getReserveFeed() external view returns (address) {
@@ -154,12 +157,14 @@ contract SolvBTCRateProvider is Initializable, Ownable2StepUpgradeable {
         require(reserveFeed != address(0), "Invalid reserve feed");
         RateProviderStorage storage $ = _getStorage();
         $.reserveFeed = reserveFeed;
+        emit ReserveFeedSet(reserveFeed);
     }
 
     function _setUpdater(address updater) internal {
         require(updater != address(0), "Invalid updater");
         RateProviderStorage storage $ = _getStorage();
         $.updater = updater;
+        emit UpdaterSet(updater);
     }
 
     function _setMaxDifferencePercent(uint256 maxDifferencePercent) internal {
@@ -168,5 +173,6 @@ contract SolvBTCRateProvider is Initializable, Ownable2StepUpgradeable {
         );
         RateProviderStorage storage $ = _getStorage();
         $.maxDifferencePercent = maxDifferencePercent;
+        emit MaxDifferencePercentSet(maxDifferencePercent);
     }
 }
