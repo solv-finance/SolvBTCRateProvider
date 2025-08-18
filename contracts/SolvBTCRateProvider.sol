@@ -30,8 +30,8 @@ contract SolvBTCRateProvider is Initializable, Ownable2StepUpgradeable {
     bytes32 private constant _RATE_PROVIDER_STORAGE_SLOT =
         0xc8c866c3e879217162bd80a59ef0b1bbdd0d0754eefb3fd6155ad5f531dbc400;
     uint256 public constant RATE_PRECISION_FACTOR = 1e18;
-    uint256 public constant MIN_RATE = 95 * RATE_PRECISION_FACTOR / 100; // 0.95
-    uint256 public constant MAX_RATE = 105 * RATE_PRECISION_FACTOR / 100; // 1.05
+    uint256 public constant MIN_RATE = 985 * RATE_PRECISION_FACTOR / 1000; // 0.985
+    uint256 public constant MAX_RATE = 1015 * RATE_PRECISION_FACTOR / 1000; // 1.015
 
     modifier onlyUpdater() {
         RateProviderStorage storage $ = _getStorage();

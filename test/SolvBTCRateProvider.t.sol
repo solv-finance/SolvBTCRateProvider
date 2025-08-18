@@ -308,7 +308,7 @@ contract SolvBTCRateProviderTest is Test {
         uint256 mockReserve = uint256(reserveFeed.reserve());
         uint256 totalSupply = mockReserve;
         // Create TVL that is exactly at the max difference threshold
-        uint256 exactMaxDiffTVL = Math.mulDiv(mockReserve, 1.03 * 1e18, 1e18) + 1;
+        uint256 exactMaxDiffTVL = Math.mulDiv(mockReserve, 1.01 * 1e18, 1e18) + 1;
 
         vm.prank(updater);
         uint256 rate = rateProvider.updateRate(totalSupply, exactMaxDiffTVL);
@@ -334,7 +334,7 @@ contract SolvBTCRateProviderTest is Test {
         uint256 mockReserve = uint256(reserveFeed.reserve());
         uint256 totalSupply = mockReserve;
         // Create TVL that is just under the max difference threshold
-        uint256 justUnderMaxDiffTVL = Math.mulDiv(mockReserve, 103, 100) - 1;
+        uint256 justUnderMaxDiffTVL = Math.mulDiv(mockReserve, 101, 100) - 1;
 
         vm.prank(updater);
         uint256 rate = rateProvider.updateRate(totalSupply, justUnderMaxDiffTVL);
@@ -348,8 +348,8 @@ contract SolvBTCRateProviderTest is Test {
     function test_UpdateRate_MultipleUpdates() public {
         uint256 mockReserve1 = uint256(reserveFeed.reserve());
         uint256 totalSupply = mockReserve1;
-        uint256 mockReserve2 = Math.mulDiv(mockReserve1, 1.03 * 1e18, 1e18);
-        uint256 mockReserve3 = Math.mulDiv(mockReserve1, 0.97 * 1e18, 1e18);
+        uint256 mockReserve2 = Math.mulDiv(mockReserve1, 1.013 * 1e18, 1e18);
+        uint256 mockReserve3 = Math.mulDiv(mockReserve1, 0.987 * 1e18, 1e18);
 
         // First update
         vm.prank(updater);
