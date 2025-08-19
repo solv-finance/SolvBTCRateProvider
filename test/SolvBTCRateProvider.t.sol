@@ -97,7 +97,7 @@ contract SolvBTCRateProviderTest is Test {
 
         // Verify the rate
         assertEq(actualRate, expectedRate);
-        assertEq(rateProvider.getLatestRate(), expectedRate);
+        assertEq(rateProvider.getRate(), expectedRate);
         assertEq(rateProvider.getLatestTotalSupply(), totalSupply);
         assertEq(rateProvider.getLastTVL(), mockReserve);
         assertEq(rateProvider.getLatestUpdateTime(), block.timestamp);
@@ -301,7 +301,7 @@ contract SolvBTCRateProviderTest is Test {
 
         // Rate should be 0 when TVL is 0
         assertEq(rate, 0);
-        assertEq(rateProvider.getLatestRate(), 0);
+        assertEq(rateProvider.getRate(), 0);
     }
 
     function test_UpdateRate_ExactMaxDifference() public {
@@ -360,14 +360,14 @@ contract SolvBTCRateProviderTest is Test {
         vm.prank(updater);
         uint256 rate2 = rateProvider.updateRate(totalSupply, mockReserve2);
         assertGt(rate2, 0);
-        assertEq(rateProvider.getLatestRate(), rate2);
+        assertEq(rateProvider.getRate(), rate2);
         assertEq(rateProvider.getLastTVL(), mockReserve2);
 
         // Third update
         vm.prank(updater);
         uint256 rate3 = rateProvider.updateRate(totalSupply, mockReserve3);
         assertGt(rate3, 0);
-        assertEq(rateProvider.getLatestRate(), rate3);
+        assertEq(rateProvider.getRate(), rate3);
         assertEq(rateProvider.getLastTVL(), mockReserve3);
     }
 
@@ -387,7 +387,7 @@ contract SolvBTCRateProviderTest is Test {
 
         // Should return the previous valid rate
         assertEq(returnedRate, validRate);
-        assertEq(rateProvider.getLatestRate(), validRate);
+        assertEq(rateProvider.getRate(), validRate);
         assertEq(rateProvider.getLastTVL(), mockReserve); // Should keep previous TVL
     }
 
