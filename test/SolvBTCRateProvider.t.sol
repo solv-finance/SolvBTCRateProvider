@@ -99,7 +99,7 @@ contract SolvBTCRateProviderTest is Test {
         assertEq(actualRate, expectedRate);
         assertEq(rateProvider.getRate(), expectedRate);
         assertEq(rateProvider.getLatestTotalSupply(), totalSupply);
-        assertEq(rateProvider.getLastTVL(), mockReserve);
+        assertEq(rateProvider.getLatestTVL(), mockReserve);
         assertEq(rateProvider.getLatestUpdateTime(), block.timestamp);
     }
 
@@ -361,14 +361,14 @@ contract SolvBTCRateProviderTest is Test {
         uint256 rate2 = rateProvider.updateRate(totalSupply, mockReserve2);
         assertGt(rate2, 0);
         assertEq(rateProvider.getRate(), rate2);
-        assertEq(rateProvider.getLastTVL(), mockReserve2);
+        assertEq(rateProvider.getLatestTVL(), mockReserve2);
 
         // Third update
         vm.prank(updater);
         uint256 rate3 = rateProvider.updateRate(totalSupply, mockReserve3);
         assertGt(rate3, 0);
         assertEq(rateProvider.getRate(), rate3);
-        assertEq(rateProvider.getLastTVL(), mockReserve3);
+        assertEq(rateProvider.getLatestTVL(), mockReserve3);
     }
 
     function test_UpdateRate_ReturnPreviousRateOnInvalidDifference() public {
@@ -388,7 +388,7 @@ contract SolvBTCRateProviderTest is Test {
         // Should return the previous valid rate
         assertEq(returnedRate, validRate);
         assertEq(rateProvider.getRate(), validRate);
-        assertEq(rateProvider.getLastTVL(), mockReserve); // Should keep previous TVL
+        assertEq(rateProvider.getLatestTVL(), mockReserve); // Should keep previous TVL
     }
 
     function _deploySolvBTCRateProviderWithUpdater(address updater_) internal returns (SolvBTCRateProvider) {

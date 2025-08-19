@@ -131,7 +131,7 @@ contract SolvBTCRateProvider is Initializable, Ownable2StepUpgradeable {
         return $.latestTotalSupply;
     }
 
-    function getLastTVL() external view returns (uint256) {
+    function getLatestTVL() external view returns (uint256) {
         RateProviderStorage storage $ = _getStorage();
         return $.latestReserve;
     }
