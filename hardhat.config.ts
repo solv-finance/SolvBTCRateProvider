@@ -67,6 +67,12 @@ const config: HardhatUserConfig = {
       url: process.env.ETH_URL || `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
     },
+  },
+
+  etherscan: {
+    apiKey: {
+      mainnet: process.env.ETHERSCAN_API_KEY || "",
+    }
   }
 
 };
